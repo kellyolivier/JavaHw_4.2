@@ -6,11 +6,18 @@ import java.util.regex.*;
 import java.util.*;
 import java.io.*;
 
-
+/**
+ * Finds 100 pages and all the emails they contain, excluding repeats
+ */
 public class Main {
     private static HashMap<String, Boolean> hashMap = new HashMap<String, Boolean>();
     private static Set<String> emails = new HashSet<String>();
 
+    /**
+     * Reads a webpage line by line for both new urls and emails and saves them into a hashmap or a set, respectively
+     * @param url of page that will be scanned
+     * @throws IOException if error in reading page
+     */
     public static void findUrlsOnPage(URL url) throws IOException
     {
         BufferedReader rdr = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -39,11 +46,17 @@ public class Main {
         }
     }
 
+    /**
+     * Takes user-inputted url string and attempts to visit 100 pages from it. It will collect emails as it goes
+     * @param args
+     */
     public static void main(String[] args) {
         System.out.print("What would you like to search? ");
         Scanner in = new Scanner(System.in);
         String s = in.next();
-        //String s = "https://www.foxnews.com/"; //"http://www.wikia.com/explore";
+        //ToPete: I had trouble getting tokens to work with https, so if you need test websites for http, I used
+        // "http://www.foxnews.com/" to test emails (theres one email on the page twice)
+        // "http://www.wikia.com/explore" to do a full crawl, with no emails. Has a lot of links everywhere though, also shows error handling
         hashMap.put(s, false);
 
         int visitCount = 0;
@@ -53,8 +66,7 @@ public class Main {
             for (String key : keys) {
                 if (hashMap.containsKey(key) && !hashMap.get(key)) {
 
-                    //System.out.println("found unchecked link: " +key);
-
+                    //only counts url towards visit count if no errors occur when accessing it
                     try
                     {
                         findUrlsOnPage(new URL(key));
